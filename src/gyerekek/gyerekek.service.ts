@@ -43,4 +43,66 @@ export class GyerekekService {
       return false
     }
   }
+
+  async addToyToChild(gyerekId: number, jatekId: number) {
+    try {
+      const gyerek = await this.db.gyerekek.findUnique({
+        where: { id: gyerekId },
+        include: { jatekok: true },
+      });
+  
+      const jatek = await this.db.jatekok.findUnique({
+        where: { id: jatekId },
+      });
+  
+      if (!gyerek || !jatek) {
+        return null;
+      }
+  
+      await this.db.gyerekek.update({
+        where: { id: gyerekId },
+        data: {
+          jatekok: {
+            connect: { id: jatekId },
+          },
+        },
+      });
+  
+      return true;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  
+  async removeToyFromChild(gyerekId: number, jatekId: number) {
+    try {
+      const gyerek = await this.db.gyerekek.findUnique({
+        where: { id: gyerekId },
+        include: { jatekok: true },
+      });
+  
+      const jatek = await this.db.jatekok.findUnique({
+        where: { id: jatekId },
+      });
+  
+      if (!gyerek || !jatek) {
+        return null;
+      }
+  
+      await this.db.gyerekek.update({
+        where: { id: gyerekId },
+        data: {
+          jatekok: {
+            disconnect: { id: jatekId },
+          },
+        },
+      });
+  
+      return true;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Put } from '@nestjs/common';
 import { GyerekekService } from './gyerekek.service';
 import { CreateGyerekekDto } from './dto/create-gyerekek.dto';
 import { UpdateGyerekekDto } from './dto/update-gyerekek.dto';
@@ -16,6 +16,7 @@ export class GyerekekController {
   findAll() {
     return this.gyerekekService.findAll();
   }
+  
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
@@ -25,7 +26,6 @@ export class GyerekekController {
     }
     return gyerek
   }
-  
  
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateGyerekekDto: UpdateGyerekekDto) {
@@ -37,11 +37,28 @@ export class GyerekekController {
   }
 
   @Delete(':id')
- async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
    const torol = await this.gyerekekService.remove(+id);
    if(!torol){
     throw new NotFoundException("No child with this id")
    }
    return torol
   }
+  @Put(':gyerekId/jatekok/:jatekId')
+  async addToyToChild(@Param('gyerekId') gyerekId: string, @Param('jatekId') jatekId: string) {
+    const result = await this.gyerekekService.addToyToChild(+gyerekId, +jatekId);
+    if (!result) {
+      throw new NotFoundException('Child or Game not found');
+    }
+    return result;
+  }
+  @Delete(':gyerekId/jatekok/:jatekId')
+  async removeToyFromChild(@Param('gyerekId') gyerekId: string, @Param('jatekId') jatekId: string) {
+    const result = await this.gyerekekService.removeToyFromChild(+gyerekId, +jatekId);
+    if (!result) {
+      throw new NotFoundException('Child or Game not found');
+    }
+    return result;
+  }
+   
 }
