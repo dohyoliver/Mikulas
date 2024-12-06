@@ -29,11 +29,11 @@ export class GyerekekController {
  
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateGyerekekDto: UpdateGyerekekDto) {
-    const csere = await this.gyerekekService.update(+id, updateGyerekekDto)
-    if(!csere){
+    const gyerek = await this.gyerekekService.update(+id, updateGyerekekDto)
+    if(!gyerek){
       throw new NotFoundException("No child with this id")
     }
-    return csere
+    return gyerek
   }
 
   @Delete(':id')
